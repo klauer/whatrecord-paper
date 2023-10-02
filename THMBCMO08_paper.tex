@@ -1,0 +1,451 @@
+% !TeX spellcheck = en_US
+%
+%
+% v 2.3  Feb 2019   Volker RW Schaa
+%		# changes in the collaboration therefore updated file "jacow-collaboration.tex"
+%		# all References with DOIs have their period/full stop before the DOI (after pp. or year)
+%		# in the author/affiliation block all ZIP codes in square brackets removed as it was not 
+%         understood as optional parameter and ZIP codes had bin put in brackets
+%       # References to the current IPAC are changed to "IPAC'19, Melbourne, Australia"
+%       # font for "url" style changed to "newtxtt" as it is easier to distinguish "O" and "0"
+%
+\documentclass[letter,
+               %boxit,        % check whether paper is inside correct margins
+               %titlepage,    % separate title page
+               %refpage       % separate references
+               %biblatex,     % biblatex is used
+               keeplastbox,   % flushend option: not to un-indent last line in References
+               %nospread,     % flushend option: do not fill with whitespace to balance columns
+               %hyphens,      % allow \url to hyphenate at "-" (hyphens)
+               %xetex,        % use XeLaTeX to process the file
+               %luatex,       % use LuaLaTeX to process the file
+               ]{jacow}
+%
+% ONLY FOR \footnote in table/tabular
+%
+\usepackage{pdfpages,multirow,ragged2e} %
+%
+% CHANGE SEQUENCE OF GRAPHICS EXTENSION TO BE EMBEDDED
+% ----------------------------------------------------
+% test for XeTeX where the sequence is by default eps-> pdf, jpg, png, pdf, ...
+%    and the JACoW template provides JACpic2v3.eps and JACpic2v3.jpg which
+%    might generates errors, therefore PNG and JPG first
+%
+\makeatletter%
+	\ifboolexpr{bool{xetex}}
+	 {\renewcommand{\Gin@extensions}{.pdf,%
+	                    .png,.jpg,.bmp,.pict,.tif,.psd,.mac,.sga,.tga,.gif,%
+	                    .eps,.ps,%
+	                    }}{}
+\makeatother
+
+% CHECK FOR XeTeX/LuaTeX BEFORE DEFINING AN INPUT ENCODING
+% --------------------------------------------------------
+%   utf8  is default for XeTeX/LuaTeX
+%   utf8  in LaTeX only realises a small portion of codes
+%
+\ifboolexpr{bool{xetex} or bool{luatex}} % test for XeTeX/LuaTeX
+ {}                                      % input encoding is utf8 by default
+ {\usepackage[utf8]{inputenc}}           % switch to utf8
+
+\usepackage[USenglish]{babel}
+
+% My packages:
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{mauve},
+  stringstyle=\color{dkgreen},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+%
+% if BibLaTeX is used
+%
+\ifboolexpr{bool{jacowbiblatex}}%
+ {%
+  \addbibresource{jacow-test.bib}
+  \addbibresource{biblatex-examples.bib}
+ }{}
+\listfiles
+
+%%
+%%   Lengths for the spaces in the title
+%%   \setlength\titleblockstartskip{..}  %before title, default 3pt
+%%   \setlength\titleblockmiddleskip{..} %between title + author, default 1em
+%%   \setlength\titleblockendskip{..}    %afterauthor, default 1em
+
+\begin{document}
+
+\title{WHATRECORD: A PYTHON-BASED EPICS FILE FORMAT TOOL
+\thanks{Work supported by U.S. D.O.E. Contract DE-AC02-76SF00515.}}
+\author{Kenneth Lauer\thanks{klauer@slac.stanford.edu}, SLAC National Accelerator Laboratory, Menlo Park, CA }
+	
+\maketitle
+
+%
+\begin{abstract}
+  whatrecord is a Python-based parsing tool for interacting with a variety of
+  EPICS (Experimental Physics and Industrial Control System) file formats,
+  including V3 and V7 database files. The project aims for compliance with
+  epics-base by using Lark\cite{lark} grammars that closely reflect the
+  original Lex/Yacc grammars. 
+
+  whatrecord offers a suite of tools for working with its supported file
+  formats, with convenient Python-facing dataclass object representations and
+  easy JSON (JavaScript Object Notation) serialization. A prototype backend web
+  server for hosting IOC (Input/Output Controller) and record information is
+  also included as well as a Vue.js-based frontend, an EPICS build system
+  Makefile dependency inspector, a static analyzer-of-sorts for startup
+  scripts, and a host of other things that the author added at whim to this
+  side project.
+\end{abstract}
+
+
+\section{BACKGROUND}
+
+\begin{figure}[!htb]
+   \centering
+   \includegraphics*[width=.7\columnwidth]{JACpic_mc}
+   \caption{Layout of papers.}
+   \label{fig:paper_layout}
+\end{figure}
+
+\subsection{The problem - and the inspiration}
+
+At the LCLS, the accelerator and photon side control systems include
+approximately 3000 IOC instances in total, with hundreds of modules and
+dozens of versions per module.
+
+In general, these EPICS IOCs, modules, and extensions are comprised of a
+conglomeration of unique file formats. Some examples include:
+
+\begin{Itemize}
+  \item Process database files (.db)
+  \item Database definition files (.dbd)
+  \item Template / substitutions files
+  \item IOC shell scripts (st.cmd)
+  \item StreamDevice protocols (.proto)
+  \item State notation language programs (.st)
+  \item Gateway configuration (.pvlist)
+  \item Access security files (.acf)
+  \item Facility-specific things like LCLS’s IOC manager configuration
+  \item Build system Makefiles
+\end{Itemize}
+
+Combined, this makes for an enormous code base with a mix of these
+EPICS-specific file formats.
+
+Links between these files are often implicit.  Take, for example, that an EPICS
+IOC record has a specific record type name alongside its name in a database
+file (.db).  An EPICS PV (Process Variable) name, in a traditional IOC, starts
+with the record name defined in a database file. This PV name acts as a global
+identifier that allows for clients on the same network subnet to access - and
+potentially modify - related data.
+
+A record is made up of fields which can contain metadata like engineering units
+or user-specified descriptions, references to other records, relevant data
+values, and so on.
+
+An example record instance, defining a single AI (analog input) record named
+\verb_IOC:RECORD:NAME_ is as follows:
+\begin{lstlisting}[language=bash]
+  record(ai, "IOC:RECORD:NAME") {}
+\end{lstlisting}
+
+This file does not define what the fields of the record type; that is the
+responsibility of the database definition file (.dbd). A simplified excerpt
+from a database definition file, defining a single field
+for the "ai" record type is as follows:
+
+\begin{lstlisting}[language=bash]
+  recordtype(ai) {
+      ...
+      field(NAME, DBF_STRING) {
+          special(SPC_NOMOD)
+          size(61)
+          prompt("Record Name")
+      }
+      ...
+  }
+\end{lstlisting}
+
+Note that there is no explicit link between the database file and the database
+definition file: neither reference the other by filename.
+Rather, one can only infer the link by examining a third file, the IOC-specific
+IOC shell script (.cmd) file, line-by-line.
+
+An excerpt from such a startup script could look like:
+\begin{lstlisting}[language=bash]
+dbLoadDatabase("path/to/the.dbd",0,0)
+IOC_registerRecordDeviceDriver(pdbbase) 
+dbLoadRecords("records.db")
+\end{lstlisting}
+
+Each line of this script includes up to one command. Each of those commands
+has been registered by either EPICS itself, the modules included in the IOC,
+or the IOC source code itself.  Typically, the available commands
+would be found either in documentation or by executing the IOC and invoking the
+built-in help system. Alternatively, the most reliable fallback ends up
+being the source code itself.
+
+Other direct or indirect references may be found inside fields.  
+For example, depending on the \verb_DTYP_ (device type) field, the \verb_INP_
+(input specification) field may be a custom string defined at the device
+support layer. Interpretation of this field requires knowledge of how
+these are formatted.  Take StreamDevice\cite{streamdevice}, a generic
+support module for communicating with controllers that use simple byte
+streams for communication, for example:
+\begin{lstlisting}[language=bash]
+  record(ai, "IOC:RECORD:NAME") {
+    field(DTYP, "stream")
+    field(INP,  "@ProtocolFilename.proto getValue PS1")
+  }
+\end{lstlisting}
+The device type here is set to \verb_"stream"_, a custom identifier that
+StreamDevice has hard-coded.  This instructs EPICS to use StreamDevice
+and interpret the \verb_INP_ field with it.  It us up to the IOC developer to
+understand the format of these strings and set them appropriately, in order
+to reference back to the protocol file that defines the byte string to send
+and the expected response format. Here, a StreamDevice protocol file for
+the above record indicates that a simple string \verb_WHAT:IS:THE:VALUE?_
+is to be sent, and a floating point value (\verb_%f_, as in the C scanf
+format specifiers) is to be sent from the controller:
+\begin{lstlisting}[language=bash]
+  getValue {
+      out "WHAT:IS:THE:VALUE?"; in "%f";
+  }
+\end{lstlisting}
+
+This section is a small but important part of what makes up an IOC: the build
+system surrounding all of these files, other modules with their own standards,
+access security configuration for intra-subnet access, gateway configuration
+controlling inter-subnet access, facility-specific tools that rely on PV
+names, and so on further complicate the number of files and references
+one needs to be aware of.
+
+While those familiar with EPICS IOC development may find that the above is
+obvious and simple, it can be opaque at best to newer users and those unable to
+dedicate the time to reading through esoteric manuals (if lucky, source code
+otherwise).
+
+\subsection{Goals and the emergence of whatrecord}
+
+The previous section's problem led the author over the years to desire a tool
+that could somehow unify these file formats and provide the ability to inspect
+the implicit links.
+
+The overall goals of the project could be summarized as:
+\begin{itemize}
+  \item Allow for easy parsing of all the special formats outside, and
+    represent them in a widely-used interchange format like JSON.
+  \item Aid the user in the understanding of existing IOCs, whether they are
+    deployed and running or not.
+  \item Provide a method to see how different records, different IOCs, all
+    relate to one another, without requiring the IOC to be running.
+  \item Provide a method for cross-referencing a PV name to its database
+    file, record definition, startup script, and IOC.
+\end{itemize}
+
+These initial goals led to the creation of this new Python package, whatrecord.
+Taking it a step further and exploring possibilities led to linking records to
+PLC code, to StreamDevice protocol information, to gateway access rules, 
+and even shell commands to their respective source code.
+
+\subsection{Features}
+whatrecord will parse any of the following into intuitive Python dataclasses using lark:
+\begin{itemize}
+  \item Database files (V3 or V4/V7), database definitions, template/substitution files
+  \item Access security configuration files
+  \item Autosave .sav files
+  \item Gateway pvlist configuration files
+  \item StreamDevice protocol files
+  \item snlseq/sequencer state machine parsing
+\end{itemize}
+
+whatrecord can also interpret IOC shell scripts (i.e., st.cmd) and track
+contextual information during the loading process:
+\begin{itemize}
+  \item What files were loaded during startup?
+  \item What records are available?
+  \item What errors were found?
+  \item What file and line did record X get loaded?
+  \item Inter- or intra-IOC record relationships
+\end{itemize}
+
+Additionally, whatrecord offers tools for:
+\begin{itemize}
+  \item EPICS build system Makefile introspection, a sumo\cite{sumo}-inspired
+    implementation.
+  \item GDB Python script that inspects binary symbols to find IOC shell commands, variables and source code context
+    \begin{verbatim}dbLoadRecords [str: fname] [str: subs]\end{verbatim}
+    \begin{verbatim}.../src/ioc/db/dbIocRegister.c:53\end{verbatim}
+  \item Accurate EPICS macro handling (epics-base macLib, wrapped with Cython in epicsmacrolib\cite{epicsmacrolib}).
+  \item Linting startup scripts.
+  \item Plugins for loading happi devices, TwinCAT PLC projects, IOC information from LCLS’s IOC manager, …
+  \item Process database record to Beckhoff TwinCAT PLC source code definition (when used in conjunction with pytmc\cite{pytmc})
+  \item Python API, command-line tools for some of the above things
+  \item A web-based API/backend server to monitor IOC scripts and serve IOC/record information.
+  \item Vue.js-based frontend single-page application
+\end{itemize}
+
+
+Parsing with jq
+
+\begin{lstlisting}[language=bash]
+  $ whatrecord parse whatrecord/tests/iocs/db/pva/iq.db |
+     jq '.records[] | [.name, .record_type, .fields.OUT.value]'
+  [
+    "$(PREFIX)Rate",
+    "ao",
+    "$(PREFIX)dly_.ODLY NPP"
+  ]
+  [
+    "$(PREFIX)Delta",
+    "ao",
+    null
+  ]
+  ...
+\end{lstlisting}
+
+\begin{lstlisting}[language=bash]
+$ whatrecord parse whatrecord/tests/iocs/db/pva/iq.db | 
+    jq '.records[] | [ .name, .info["Q:group"]]'
+[
+  "$(PREFIX)Rate",
+  null
+]
+[
+  "$(PREFIX)Phase:I",
+  {
+    "$(PREFIX)iq": {
+      "phas.i": {
+        "+type": "plain",
+        "+channel": "VAL"
+      }
+    }
+  }
+]
+...
+
+\end{lstlisting}
+
+\section{CORE FUNCTIONALITY}
+
+\subsection{Parsing with lark}
+
+\subsection{Backend serverParsing with lark}
+
+\begin{itemize}
+  \item Load up all EPICS IOCs (either user-specified or those listed in LCLS’s IOC manager tool)
+  \item Load the startup scripts
+  \item Load all the databases and supported files
+  \item Monitor loaded files for changes
+  \item Provide a backend service for querying the information
+  \item Based on the backend server, provide a frontend for easy access to that information
+\end{itemize}
+
+\subsection{Command-line tools}
+\subsubsection{whatrecord deps}
+
+Makefile-derived dependency graph tool
+
+\subsubsection{whatrecord graph}
+
+Intra/inter-IOC record graphs
+
+State notation language transition diagrams
+
+\subsubsection{whatrecord server}
+
+\section{Vue.js WEB FRONTEND}
+
+\begin{itemize}
+  \item Search for records/IOCs/etc by name and dig into the details...
+\end{itemize}
+
+\subsection{Record searching}
+\subsection{IOC listing}
+\subsection{Inter-IOC PV Map}
+\subsection{Gateway}
+\subsection{LCLS-Specific Tools}
+\subsubsection{Happi}
+\subsubsection{LDAP / netconfig settings viewer}
+\subsubsection{epicsArch settings}
+
+\subsection{References}
+
+The whatrecord source code is available on GitHub\cite{whatrecord-github}
+and documentation is available on GitHub Pages\cite{whatrecord-docs}.
+
+%
+% only for "biblatex"
+%
+\ifboolexpr{bool{jacowbiblatex}}%
+	{\printbibliography}%
+	{%
+	% "biblatex" is not used, go the "manual" way
+	
+	%\begin{thebibliography}{99}   % Use for  10-99  references
+	\begin{thebibliography}{9} % Use for 1-9 references
+	
+	\bibitem{whatrecord-github}
+		whatrecord source code repository,
+		\url{http://www.github.com/pcdshub/whatrecord}
+	
+	\bibitem{whatrecord-docs}
+		whatrecord documentation,
+		\url{http://pcdshub.github.io/whatrecord}
+	
+	\bibitem{epics-base}
+		EPICS,
+		\url{http://www.aps.anl.gov/epics/}
+	
+	\bibitem{streamdevice}
+		StreamDevice,
+		\url{https://paulscherrerinstitute.github.io/StreamDevice/index.html}
+	
+	\bibitem{lark}
+		Lark - a parsing toolkit for Python,
+		\url{https://github.com/lark-parser/lark/}
+	
+	\bibitem{epicsmacrolib}
+		epicsmacrolib,
+		\url{https://github.com/pcdshub/epicsmacrolib}
+	
+	\bibitem{sumo}
+		epics-sumo,
+		\url{https://epics-sumo.sourceforge.io/}
+	
+	\bibitem{pytmcsumo}
+		pytmc,
+		\url{https://github.com/pcdshub/pytmc/}
+	
+	\end{thebibliography}
+} % end \ifboolexpr
+
+%
+% for use as JACoW template the inclusion of the ANNEX parts have been commented out
+% to generate the complete documentation please remove the "%" of the next two commands
+% 
+%%%%\newpage
+
+%%%%\include{annexes-Letter}
+
+\end{document}

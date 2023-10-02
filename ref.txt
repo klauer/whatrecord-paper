@@ -1,0 +1,121 @@
+
+  \begin{table}[h!b]
+	\setlength\tabcolsep{3.5pt}
+	\centering
+	\caption{Summary of Styles}
+	\label{tab:styles}
+	\begin{tabular}{llcc}
+		\toprule
+		\textbf{Style} & \textbf{Font}               & \textbf{Space}  & \textbf{Space} \\
+		&                             & \textbf{Before} & \textbf{After} \\
+		\midrule
+		\textbf{PAPER}  & \SI{14}{pt}                 & \SI{0}{pt}      & \SI{3}{pt}  \\
+		\textbf{TITLE}  & \textbf{UPPERCASE}          &                 &      \\
+		& \textbf{EXCEPT FOR}         &                 &      \\
+		& \textbf{REQUIRED lowercase} &                 &      \\
+		& \textbf{letters}            &                 &      \\
+		& \textbf{Bold}               &                 &      \\[5pt]
+		%\midrule
+		Author list  & \SI{12}{pt}                 & \SI{9}{pt}      & \SI{12}{pt} \\
+		& UPPER- and lowercase        &                 &      \\[5pt]
+		%\midrule
+		\textit{Abstract} & \SI{12}{pt}                 & \SI{0}{pt}      & \SI{3}{pt} \\
+		\textit{Title}  & \textit{Initial Caps}       &                 &      \\
+		& \textit{Italic}             &                 &      \\[5pt]
+		%\midrule
+		\textbf{Section}  & \SI{12}{pt}                 & \SI{9}{pt}      & \SI{3}{pt}  \\
+		\textbf{Heading}  & \textbf{UPPERCASE}          &                 &      \\
+		& \textbf{bold}               &                 &      \\[5pt]
+		%\midrule
+		\textit{Subsection} & \SI{12}{pt}                 & \SI{6}{pt}      & \SI{3}{pt}  \\
+		\textit{Heading}
+                             & \textit{Initial Caps}       &                 &      \\
+		& \textit{Italic}             &                 &      \\[5pt]
+		%\midrule
+		\textbf{Third-level} & \SI{10}{pt}                 & \SI{6}{pt}      & \SI{0}{pt}  \\
+		\textbf{Heading}     
+                            & \textbf{Initial Caps}       &                 &      \\
+		& \textbf{Bold}               &                 &      \\[5pt]
+		%\midrule
+		Figure        & \SI{10}{pt}                 & \SI{3}{pt}      & $\ge$\SI{3}{pt}  \\
+		Captions      &                             &                 &      \\[5pt]
+		%\midrule
+		Table         & \SI{10}{pt}                 & $\ge$\SI{3}{pt} & \SI{3}{pt}  \\
+		Captions	  &                             &                 &      \\[5pt]
+		%\midrule
+		Equations     & \SI{10}{pt} base font       & $\ge$\SI{6}{pt}     & $\ge$\SI{6}{pt} \\[5pt]
+		%\midrule
+		References      & \SI{9}{pt}				& \SI{0}{pt}      & \SI{3}{pt} \\
+        when $\le9$ 	& \verb|\bibliography{9}|	&                 &  \\[5pt]
+        Refs. $\ge10$ 	& \SI{9}{pt}				& \SI{0}{pt}      & \SI{3}{pt}  \\
+                		& \verb|\bibliography{99}|	&    &    \\
+		\bottomrule   %\SI{0.25}{in}
+	\end{tabular}
+\end{table}
+
+\subsection{Footnotes}
+
+Footnotes on the title and author lines may be used for acknowledgments
+and e-mail addresses. A non-numeric sequence of characters (*, \#,
+\dag, \ddag, \P) should be used to indicate the footnote.
+These “pseudo footnotes” should only
+appear at the bottom of the first column on the first page.
+
+Any other footnote in the body of the paper should
+use the normal numeric sequencing (i.\,e., 1, 2, 3)
+and appear at the bottom of the same column in which
+it is used.  All footnotes are of 8pt font size.
+
+\subsection{Acronyms}
+
+Acronyms should be defined the first time they appear, 
+both in the abstract and in the rest of the paper. 
+
+\section{STYLES}
+
+Table~\ref{tab:styles} summarizes the fonts and spacing used in the styles of
+a JACoW template. In \LaTeX, these 
+are implemented in the “jacow” class file.
+
+\section{PAGE NUMBERS}
+
+\textbf{DO NOT include any page numbers}. They will be added
+when the final proceedings are produced.
+
+\section{TEMPLATES}
+
+Template documents for the recommended word processing
+software are available from the JACoW website~\cite{jacow-help}
+and exist for \LaTeX, Microsoft Word (Mac and PC)
+and LibreOffice/Apache OpenOffice for US letter and A4
+paper sizes. Use the correct template for your paper size and
+platform.
+
+Fonts are embedded by default with pdf\LaTeX. Using \LaTeX{} with `dvips', 
+make sure that `ps2pdf' has the option \texttt{-dEmbedAllFonts=true}'.
+Fonts of included figure graphics in PDF or EPS are often not embedded. 
+So make sure that this done when generating them or reprocess them 
+in `Ghostscript' with the switch \texttt{-dEmbedAllFonts=true}' set.
+
+\flushcolsend
+
+\section{CHECKLIST FOR ELECTRONIC PUBLICATION}
+Authors are requested to go over the following checklist for electronic publication:
+\begin{Itemize}
+	\item  Use only Times or Times New Roman (standard, bold or italic) and Symbol
+	fonts for text, \SI{10}{pt} except references, which should be \SI{9}{pt}.
+	
+	\item  Figures should use Times or Times New Roman (standard, bold or italic) and
+	Symbol fonts when possible---\SI{6}{pt} minimum, with fonts embedded.
+	\item  Check that citations to references appear in sequential order and
+	that all references are cited.
+	\item  Check that the PDF file prints correctly.
+	\item  Check that there are no page numbers.
+	\item  Check that the margins on the printed version are within \SI{\pm1}{mm}
+	of the specifications.
+	\item  \LaTeX{} users can check their margins by invoking the
+	\texttt{boxit} option.
+\end{Itemize}
+
+Please also check the list of common oversights which can be found in \textbf{ANNEX C}.
+
