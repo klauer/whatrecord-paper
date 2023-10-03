@@ -112,49 +112,45 @@
   easy JSON (JavaScript Object Notation) serialization. A prototype backend web
   server for hosting IOC (Input/Output Controller) and record information is
   also included as well as a Vue.js-based frontend, an EPICS build system
-  Makefile dependency inspector, a static analyzer-of-sorts for startup
+  \verb_Makefile_ dependency inspector, a static analyzer-of-sorts for startup
   scripts, and a host of other things that the author added at whim to this
   side project.
 \end{abstract}
 
-
 \section{BACKGROUND}
-
-\begin{figure}[!htb]
-   \centering
-   \includegraphics*[width=.7\columnwidth]{JACpic_mc}
-   \caption{Layout of papers.}
-   \label{fig:paper_layout}
-\end{figure}
 
 \subsection{The problem - and the inspiration}
 
-At the LCLS, the accelerator and photon side control systems include
-approximately 3000 IOC instances in total, with hundreds of modules and
-dozens of versions per module.
+At the LCLS (SLAC's Linac Coherent Light Source), the accelerator and photon
+side control systems include approximately 3000 IOC instances in total, with
+hundreds of modules and dozens of versions per module.
 
 In general, these EPICS IOCs, modules, and extensions are comprised of a
-conglomeration of unique file formats. Some examples include:
+conglomeration of unique file formats. Some common examples of such file
+formats include:
 
 \begin{Itemize}
-  \item Process database files (.db)
-  \item Database definition files (.dbd)
+  \item Process database files (\verb_.db_)
+  \item Database definition files (\verb_.dbd_)
   \item Template / substitutions files
-  \item IOC shell scripts (st.cmd)
-  \item StreamDevice protocols (.proto)
-  \item State notation language programs (.st)
-  \item Gateway configuration (.pvlist)
-  \item Access security files (.acf)
-  \item Facility-specific things like LCLS’s IOC manager configuration
-  \item Build system Makefiles
+  \item IOC shell scripts (\verb_st.cmd_)
+  \item StreamDevice protocols (\verb_.proto_)
+  \item State notation language programs (\verb_.st_)
+  \item Gateway configuration (\verb_.pvlist_)
+  \item Access security files (\verb_.acf_)
+  \item Build system \verb_Makefile_s
 \end{Itemize}
+
+Additionally, facility-specific tools (centralized IOC management tools like
+LCLS's IOC Manager, archiver appliance automation tools, and so on) build on
+top of IOCs and records.
 
 Combined, this makes for an enormous code base with a mix of these
 EPICS-specific file formats.
 
 Links between these files are often implicit.  Take, for example, that an EPICS
 IOC record has a specific record type name alongside its name in a database
-file (.db).  An EPICS PV (Process Variable) name, in a traditional IOC, starts
+file (\verb_.db_), an EPICS PV (Process Variable) name, in a traditional IOC, starts
 with the record name defined in a database file. This PV name acts as a global
 identifier that allows for clients on the same network subnet to access - and
 potentially modify - related data.
@@ -225,11 +221,12 @@ understand the format of these strings and set them appropriately, in order
 to reference back to the protocol file that defines the byte string to send
 and the expected response format. Here, a StreamDevice protocol file for
 the above record indicates that a simple string \verb_WHAT:IS:THE:VALUE?_
-is to be sent, and a floating point value (\verb_%f_, as in the C scanf
+is to be sent, and a floating point value (\verb_%f_, as in the C \verb_scanf_
 format specifiers) is to be sent from the controller:
 \begin{lstlisting}[language=bash]
   getValue {
-      out "WHAT:IS:THE:VALUE?"; in "%f";
+      out "WHAT:IS:THE:VALUE?";
+      in "%f";
   }
 \end{lstlisting}
 
@@ -268,7 +265,9 @@ Taking it a step further and exploring possibilities led to linking records to
 PLC code, to StreamDevice protocol information, to gateway access rules, 
 and even shell commands to their respective source code.
 
-\subsection{Features}
+\section{FEATURES}
+
+\subsection{Overview}
 whatrecord will parse any of the following into intuitive Python dataclasses using lark:
 \begin{itemize}
   \item Database files (V3 or V4/V7), database definitions, template/substitution files
@@ -279,7 +278,7 @@ whatrecord will parse any of the following into intuitive Python dataclasses usi
   \item snlseq/sequencer state machine parsing
 \end{itemize}
 
-whatrecord can also interpret IOC shell scripts (i.e., st.cmd) and track
+whatrecord can also interpret IOC shell scripts (i.e., \verb_st.cmd_) and track
 contextual information during the loading process:
 \begin{itemize}
   \item What files were loaded during startup?
@@ -291,23 +290,79 @@ contextual information during the loading process:
 
 Additionally, whatrecord offers tools for:
 \begin{itemize}
-  \item EPICS build system Makefile introspection, a sumo\cite{sumo}-inspired
+  \item EPICS build system \verb_Makefile_ introspection, a sumo\cite{sumo}-inspired
     implementation.
   \item GDB Python script that inspects binary symbols to find IOC shell commands, variables and source code context
-    \begin{verbatim}dbLoadRecords [str: fname] [str: subs]\end{verbatim}
-    \begin{verbatim}.../src/ioc/db/dbIocRegister.c:53\end{verbatim}
-  \item Accurate EPICS macro handling (epics-base macLib, wrapped with Cython in epicsmacrolib\cite{epicsmacrolib}).
+    \begin{lstlisting}[language=bash]
+  dbLoadRecords [str: fname] [str: subs]
+  .../src/ioc/db/dbIocRegister.c:53
+    \end{lstlisting}
+  \item Accurate EPICS macro handling using epicsmacrolib\cite{epicsmacrolib}.
   \item Linting startup scripts.
-  \item Plugins for loading happi devices, TwinCAT PLC projects, IOC information from LCLS’s IOC manager, …
-  \item Process database record to Beckhoff TwinCAT PLC source code definition (when used in conjunction with pytmc\cite{pytmc})
-  \item Python API, command-line tools for some of the above things
-  \item A web-based API/backend server to monitor IOC scripts and serve IOC/record information.
-  \item Vue.js-based frontend single-page application
+  \item Plugins for loading happi devices, TwinCAT PLC projects, and IOC information from LCLS’s IOC manager.
+  \item Process database record to Beckhoff TwinCAT PLC source code definition mapping (when used in conjunction with pytmc\cite{pytmc}).
 \end{itemize}
 
+An intuitive Python API, user-facing command-line tools, a web-based
+API/backend server to monitor IOC scripts and serve IOC/record information, and
+a Vue.js-based frontend single-page application are also provided.
 
-Parsing with jq
+\section{CORE FUNCTIONALITY}
 
+\subsection{Parsing with lark}
+
+whatrecord utilizes the Lark\cite{lark} parser internally to parse most of its supported
+file formats.  Lark supports writing custom parsers with EBNF (extended
+Backus–Naur form) metasyntax.  It is capable of parsing all context-free
+grammars with ambiguity resolution. 
+
+The grammars implemented in whatrecord closely resemble those in EPICS because
+the source Lex/Yacc grammars are syntactically similar.  A test suite is
+included in whatrecord which attempts to cover various aspects of the packaged
+grammars.
+
+Parsing a file in whatrecord results in user-friendly type annotated
+\verb_dataclass_ instances. These can be readily inspected programmatically,
+serialized to JSON, and - in several cases - exported back into their original
+format.
+
+\begin{lstlisting}[language=python]
+import whatrecord
+db = whatrecord.parse(
+    "whatrecord/tests/iocs/db/basic_asyn_motor.db"
+)
+record = db.records["$(P)$(M)"]
+print(record.fields["TWV"].value)  # -> '1'
+\end{lstlisting}
+
+A key feature of whatrecord's parsing utilities is that it records the context
+of many operations.  When two different files are used to load a record,
+both will be present in the context information:
+
+\begin{lstlisting}[language=python]
+import whatrecord
+ioc = whatrecord.parse(
+  "whatrecord/tests/iocs/ioc_a/st.cmd"
+)
+db = ioc.shell_state.database
+record = db["IOC:KFE:A:One"]
+print(record.context)
+\end{lstlisting}
+
+Yields the following:
+\begin{lstlisting}[language=python]
+(whatrecord/tests/iocs/ioc_a/st.cmd:13,
+ whatrecord/tests/iocs/ioc_a/ioc_a.db:1)
+\end{lstlisting}
+
+\subsection{Exporting/serializing to JSON}
+
+With the whatrecord command-line entry point, you can parse supported formats
+and pipe their information to tools like \verb_jq_\cite{jq} to interact and run
+basic queries on data.
+
+The following lists all records in a database file and selects a set of
+information:
 \begin{lstlisting}[language=bash]
   $ whatrecord parse whatrecord/tests/iocs/db/pva/iq.db |
      jq '.records[] | [.name, .record_type, .fields.OUT.value]'
@@ -323,6 +378,8 @@ Parsing with jq
   ]
   ...
 \end{lstlisting}
+
+The following inspects some EPICS V4 \verb_Q:Group_ settings:
 
 \begin{lstlisting}[language=bash]
 $ whatrecord parse whatrecord/tests/iocs/db/pva/iq.db | 
@@ -346,48 +403,191 @@ $ whatrecord parse whatrecord/tests/iocs/db/pva/iq.db |
 
 \end{lstlisting}
 
-\section{CORE FUNCTIONALITY}
+\subsection{Formats and implementation notes}
 
-\subsection{Parsing with lark}
+\subsubsection{Database files}
 
-\subsection{Backend serverParsing with lark}
+whatrecord implements two grammars for EPICS process databases, as there are
+significant differences between the grammars used for EPICS V3 and V4+ IOCs.
 
-\begin{itemize}
-  \item Load up all EPICS IOCs (either user-specified or those listed in LCLS’s IOC manager tool)
-  \item Load the startup scripts
-  \item Load all the databases and supported files
-  \item Monitor loaded files for changes
-  \item Provide a backend service for querying the information
-  \item Based on the backend server, provide a frontend for easy access to that information
-\end{itemize}
+A flag is available \begin{verbatim}whatrecord parse --v3\end{verbatim} for
+facilities that have not yet opted in to V4+.
+
+\subsubsection{Access Security Configuration Files (ACF)}
+
+whatrecord parses ACF files that target typical EPICS IOCs along with
+the EPICS gateway.  This information can be correlated to records in the
+frontend, covered in a later section.
+
+\subsubsection{Substitution files}
+
+Substitutions files and those supported by \verb_dbLoadTemplate_ are
+readily supported by whatrecord.  Contextual information as to which
+files are loaded in the process is reliably carried along.
+
+A separate grammar for the format used by the command-line tool \verb_MSI_ (the
+Macro Substitution and Include tool) is also provided due to their
+differing implementations.
+
+\subsubsection{Autosave save files}
+
+Autosave save files (\verb_.sav_), which track the state of a record such that
+it may be restored at the next boot of an IOC, are supported by whatrecord.
+In the web frontend, these values will be displayed alongside those in the
+database file.
+
+\subsubsection{Gateway PV lists}
+
+Gateway \verb_.pvlist_ files are supported by whatrecord.  In the frontend,
+this allows for the easy correlation of gateway rules to records that
+apply to it, and also in reverse, showing which gateway rules apply to
+the selected record.
+
+\subsubsection{Sequencer - State Notation Language}
+
+The EPICS sequencer's state notation language format \verb_.st_ files is
+supported by whatrecord with some caveats.  whatrecord does not have full
+support for a C preprocessor, which the sequencer relies on.  This means
+that for simple files (and those that only use simple C \verb_define_s), whatrecord
+successfully parses the files, whereas complicated \verb_define_s could fail
+to parse with the included grammar.
+
+\subsubsection{LCLS-specific formats}
+
+At the LCLS, there are additional file formats that are in common use.
+The \verb_epicsArch_ format enumerates process variables that are to be
+included for recording in its data acquisition system.  whatrecord provides
+support for this format and allows for linting and display through the
+frontend.
+
+The LCLS photon controls team uses the Python suite Bluesky\cite{bluesky} for
+slow-speed data acquisition, with approximately 1,000 Ophyd devices indexed in
+a happi\cite{happi} database.  whatrecord provides happi integration, mapping
+process variables used in Ophyd devices back to their IOCs.
+
+\subsubsection{Startup scripts}
+
+Startup scripts do not have a corresponding grammar. In the EPICS
+implementation, the IOC shell parses commands character-by-character with a
+custom routine.  whatrecord has a ported version of this parsing function
+for maximum compatibility, supporting redirection and everything else from the
+original.
+
+\subsubsection{Macro handling}
+
+Files supported by whatrecord often use the EPICS macro library (macLib)
+in order to interpolate variables (environment variables or otherwise) to their
+corresponding values.
+
+whatrecord uses epicsmacrolib\cite{epicsmacrolib}, which is a Cython-wrapped
+version of EPICS macLib, under the hood to dutifully reproduce standard EPICS
+macro expansion and state tracking.
+
+\subsubsection{Makefiles}
+
+\verb_Makefile_s are not parsed but rather introspected by whatrecord.  GNU
+make is required in order to inspect the per-module or per-IOC settings of the
+EPICS build system.
+
+The implementation is noted as sumo\cite{sumo}-inspired, as an important part
+of how sumo scans source code is replicated in whatrecord. whatrecord
+executes \verb_make_ with a custom target, enabling the direct handling of
+any and all \verb_Makefile_ syntax that the host supports.
+
+whatrecord is able to extract a variety of information from a \verb_Makefile_
+in this manner, exporting information such as the EPICS build architectures,
+cross-compiler host architectures, target architectures, the EPICS base
+version, configuration paths, release top variables, environment variable
+settings, and so on.
+
+\subsection{Backend server}
+
+Building on top of the parsing tools, whatrecord provides an aiohttp-based
+"backend" server daemon that enables users to query IOC-related information
+over a RESTful (REpresentational State Transfer) JSON interface.
+
+A summary as to how the backend server operates is as follows:
+
+\begin{enumerate}
+  \item Find all EPICS IOCs specified by the user (or those listed in LCLS's
+    IOC manager tool)
+  \item Load the startup scripts with the built-in parsing tools, including databases and supported files.
+  \item Periodically check previously-loaded files for changes, and re-load IOCs.
+  \item Listen for clients (or the whatrecord frontend) querying for IOC information by way of aiohttp.
+\end{enumerate}
 
 \subsection{Command-line tools}
 \subsubsection{whatrecord deps}
 
-Makefile-derived dependency graph tool
+This tool utilizes the \verb_Makefile_ parsing tools internally to recursively
+generate a dependency graph of supporting modules to a given IOC.
 
 \subsubsection{whatrecord graph}
 
-Intra/inter-IOC record graphs
-
-State notation language transition diagrams
+This graphing tool allows for graphing of records or state notation language
+transition diagrams. Inter-IOC record links may be graphed if multiple
+database files or startup scripts are specified.
 
 \subsubsection{whatrecord server}
 
-\section{Vue.js WEB FRONTEND}
+This command spawns the backend server.
 
-\begin{itemize}
-  \item Search for records/IOCs/etc by name and dig into the details...
-\end{itemize}
+\section{WEB FRONTEND}
+
+A Vue.js\cite{vuejs} web-based frontend application is packaged separately in
+the whatrecord repository.  It provides a user-friendly view of the information
+that whatrecord can parse and aggregate.
+
+A searchable index of records is the primary view.  Record information can be
+used to correlate back to other tools and views. For example, when an autosave
+configuration is found in an IOC, the frontend will display that information in
+a table underneath "Autosave" and annotate the record to show the on-restore
+value.
+
+Similarly, StreamDevice protocol files, happi devices, asyn and motor port,
+Archiver Appliance, access security groups, and others will be displayed
+alongside the record information.  Source code files may be viewed by
+clicking on any context link.
+
+Record links, when detected, are displayed as an interactive graph (by way of
+\verb_d3-graphviz_\cite{d3graphviz}).
 
 \subsection{Record searching}
 \subsection{IOC listing}
 \subsection{Inter-IOC PV Map}
 \subsection{Gateway}
-\subsection{LCLS-Specific Tools}
-\subsubsection{Happi}
-\subsubsection{LDAP / netconfig settings viewer}
-\subsubsection{epicsArch settings}
+Views for LCLS-Specific tools can be enabled with an environment variable
+setting, including a view of happi devices, an LDAP / netconfig settings
+viewer, and epicsArch PV listings.
+
+\subsection{GitHub Actions and "offline" mode}
+
+A sample repository\cite{gha-sample} is provided to exhibit the "offline" mode
+supported by whatrecord.
+
+The offline mode utilizes the whatrecord server in continuous integration to
+generate a snapshot of the server information. This information then takes
+the place of a backend server, requiring only a tarball of JSON in order to
+populate the data.
+
+\subsection{Trying whatrecord}
+
+The easiest method to try the frontend alongside the backend is with Docker.
+
+\begin{lstlisting}[language=bash]
+$ git clone https://github.com/pcdshub/whatrecord
+$ cd whatrecord/docker
+$ docker-compose up
+\end{lstlisting}
+After executing the above, wait for a few minutes and then open
+\verb_http://localhost:8896_ in a browser.
+
+The parsing tools can be used directly with a working Python 3.9+ environment:
+
+\begin{lstlisting}[language=bash]
+	$ pip install whatrecord
+	$ whatrecord --help
+\end{lstlisting}
 
 \subsection{References}
 
@@ -406,11 +606,11 @@ and documentation is available on GitHub Pages\cite{whatrecord-docs}.
 	\begin{thebibliography}{9} % Use for 1-9 references
 	
 	\bibitem{whatrecord-github}
-		whatrecord source code repository,
+    whatrecord: source code repository,
 		\url{http://www.github.com/pcdshub/whatrecord}
 	
 	\bibitem{whatrecord-docs}
-		whatrecord documentation,
+    whatrecord: documentation,
 		\url{http://pcdshub.github.io/whatrecord}
 	
 	\bibitem{epics-base}
@@ -418,24 +618,44 @@ and documentation is available on GitHub Pages\cite{whatrecord-docs}.
 		\url{http://www.aps.anl.gov/epics/}
 	
 	\bibitem{streamdevice}
-		StreamDevice,
+		StreamDevice support,
 		\url{https://paulscherrerinstitute.github.io/StreamDevice/index.html}
 	
 	\bibitem{lark}
-		Lark - a parsing toolkit for Python,
+		Lark: a parsing toolkit for Python,
 		\url{https://github.com/lark-parser/lark/}
 	
 	\bibitem{epicsmacrolib}
-		epicsmacrolib,
+    epicsmacrolib: EPICS-compliant macro handling,
 		\url{https://github.com/pcdshub/epicsmacrolib}
 	
 	\bibitem{sumo}
-		epics-sumo,
+		sumo: EPICS support module manager,
 		\url{https://epics-sumo.sourceforge.io/}
 	
-	\bibitem{pytmcsumo}
-		pytmc,
+	\bibitem{pytmc}
+    pytmc: TwinCAT PLC Code to EPICS Database Tool,
 		\url{https://github.com/pcdshub/pytmc/}
+	
+	\bibitem{gha-sample}
+		GitHub Actions and whatrecord sample,
+		\url{https://github.com/pcdshub/ioc-whatrecord-example}
+	
+	\bibitem{jq}
+		jq: JSON filter command-line tool,
+		\url{https://jqlang.github.io/jq/manual/}
+	
+	\bibitem{bluesky}
+    Bluesky,
+		\url{https://blueskyproject.io/}
+	
+	\bibitem{vuejs}
+    Vue.js,
+		\url{https://vuejs.org/}
+	
+	\bibitem{d3graphviz}
+    d3-graphviz,
+		\url{https://github.com/magjac/d3-graphviz}
 	
 	\end{thebibliography}
 } % end \ifboolexpr

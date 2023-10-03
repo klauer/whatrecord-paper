@@ -1,3 +1,10 @@
+\begin{figure}[!htb]
+   \centering
+   \includegraphics*[width=.7\columnwidth]{JACpic_mc}
+   \caption{Layout of papers.}
+   \label{fig:paper_layout}
+\end{figure}
+
 
   \begin{table}[h!b]
 	\setlength\tabcolsep{3.5pt}
