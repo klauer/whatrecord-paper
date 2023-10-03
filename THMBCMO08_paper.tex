@@ -101,13 +101,13 @@
 
 %
 \begin{abstract}
-  whatrecord\cite{whatrecord-github} is a Python-based parsing tool for
+  \verb_whatrecord_\cite{whatrecord-github} is a Python-based parsing tool for
   interacting with a variety of EPICS (Experimental Physics and Industrial
   Control System) file formats, including V3 and V7 database files. The project
   aims for compliance with epics-base by using Lark\cite{lark} grammars that
   closely reflect the original Lex/Yacc grammars. 
 
-  whatrecord offers a suite of tools for working with its supported file
+  \verb_whatrecord_ offers a suite of tools for working with its supported file
   formats, with convenient Python-facing dataclass object representations and
   easy JSON (JavaScript Object Notation) serialization. A prototype backend web
   server for hosting IOC (Input/Output Controller) and record information is
@@ -248,7 +248,8 @@ The previous section's problem led the author over the years to desire a tool
 that could somehow unify these file formats and provide the ability to inspect
 the links.
 
-These initial goals led to the creation of this new Python package, whatrecord:
+These initial goals led to the creation of this new Python package,
+\verb_whatrecord_:
 \begin{itemize}
   \item Allow for easy parsing of all the special formats outside, and
     represent them in a widely-used interchange format like JSON.
@@ -267,8 +268,8 @@ gateway access rules, and even shell commands to their respective source code.
 \section{CORE FUNCTIONALITY}
 
 \subsection{Overview}
-whatrecord will parse any of the following into intuitive Python dataclasses
-using lark:
+\verb_whatrecord_ will parse any of the following into intuitive Python dataclasses
+using the Lark\cite{lark} parsing toolkit:
 \begin{itemize}
   \item Database files (V3 or V4/V7), database definitions,
     template/substitution files
@@ -285,7 +286,7 @@ what files were loaded during startup, what records will be available in the
 IOC, what errors were found when loading, what file and line did each record
 get loaded, and what are the inter- or intra-IOC record relationships.
 
-Additionally, whatrecord offers tools for:
+Additionally, \verb_whatrecord_ offers tools for:
 \begin{itemize}
   \item Exporting all parsed results to JSON-serializable objects.
   \item EPICS build system \verb_Makefile_ introspection, a sumo\cite{sumo}-inspired
@@ -310,17 +311,17 @@ a Vue.js-based frontend single-page application are also provided.
 
 \subsection{Parsing with lark}
 
-whatrecord utilizes the Lark\cite{lark} parser internally to parse most of its supported
+\verb_whatrecord_ utilizes the Lark\cite{lark} parser internally to parse most of its supported
 file formats.  Lark supports writing custom parsers with EBNF (extended
 Backus–Naur form) metasyntax.  It is capable of parsing all context-free
 grammars with ambiguity resolution. 
 
-The grammars implemented in whatrecord closely resemble those in EPICS because
+The grammars implemented in \verb_whatrecord_ closely resemble those in EPICS because
 the source Lex/Yacc grammars are syntactically similar.  A test suite is
-included in whatrecord which attempts to cover various aspects of the packaged
+included in \verb_whatrecord_ which attempts to cover various aspects of the packaged
 grammars.
 
-Parsing a file in whatrecord results in user-friendly type annotated
+Parsing a file in \verb_whatrecord_ results in user-friendly type annotated
 \verb_dataclass_ instances. These can be readily inspected programmatically,
 serialized to JSON, and - in several cases - exported back into their original
 format.
@@ -334,7 +335,7 @@ record = db.records["$(P)$(M)"]
 print(record.fields["TWV"].value)  # -> '1'
 \end{lstlisting}
 
-A key feature of whatrecord's parsing utilities is that it records the context
+A key feature of \verb_whatrecord_'s parsing utilities is that it records the context
 of many operations.  When two different files are used to load a record,
 both will be present in the context information:
 
@@ -348,7 +349,8 @@ record = db["IOC:KFE:A:One"]
 print(record.context)
 \end{lstlisting}
 
-Yields the following:
+Yields the following, indicating the files and line numbers used to load the
+given database record instance:
 \begin{lstlisting}[language=python]
 (whatrecord/tests/iocs/ioc_a/st.cmd:13,
  whatrecord/tests/iocs/ioc_a/ioc_a.db:1)
@@ -356,7 +358,7 @@ Yields the following:
 
 \subsection{Exporting/serializing to JSON}
 
-With the whatrecord command-line entry point, you can parse supported formats
+With the \verb_whatrecord_ command-line entry point, you can parse supported formats
 and pipe their information to tools like \verb_jq_\cite{jq} to interact and run
 basic queries on data.
 
@@ -406,11 +408,11 @@ $ whatrecord parse whatrecord/tests/iocs/db/pva/iq.db |
 
 \subsubsection{Database files}
 
-whatrecord implements two grammars for EPICS process databases, as there are
+\verb_whatrecord_ implements two grammars for EPICS process databases, as there are
 significant differences between the grammars used for EPICS V3 and V4+ IOCs.
 
-A flag is available \begin{verbatim}whatrecord parse --v3\end{verbatim} for
-facilities that have not yet opted in to V4+.
+A flag is available \verb_--v3_ for \verb_whatrecord parse_ to aid facilities
+that have not yet opted in to using V4+.
 
 \subsubsection{Access Security Configuration Files (ACF)}
 
@@ -421,7 +423,7 @@ frontend, covered in a later section.
 \subsubsection{Substitution files}
 
 Substitutions files and those supported by \verb_dbLoadTemplate_ are
-readily supported by whatrecord.  Contextual information as to which
+readily supported by \verb_whatrecord_.  Contextual information as to which
 files are loaded in the process is reliably carried along.
 
 A separate grammar for the format used by the command-line tool \verb_MSI_ (the
@@ -431,13 +433,13 @@ differing implementations.
 \subsubsection{Autosave save files}
 
 Autosave save files (\verb_.sav_), which track the state of a record such that
-it may be restored at the next boot of an IOC, are supported by whatrecord.
+it may be restored at the next boot of an IOC, are supported by \verb_whatrecord_.
 In the web frontend, these values will be displayed alongside those in the
 database file.
 
 \subsubsection{Gateway PV lists}
 
-Gateway \verb_.pvlist_ files are supported by whatrecord.  In the frontend,
+Gateway \verb_.pvlist_ files are supported by \verb_whatrecord_.  In the frontend,
 this allows for the easy correlation of gateway rules to records that
 apply to it, and also in reverse, showing which gateway rules apply to
 the selected record.
@@ -445,9 +447,9 @@ the selected record.
 \subsubsection{Sequencer - State Notation Language}
 
 The EPICS sequencer's state notation language format \verb_.st_ files is
-supported by whatrecord with some caveats.  whatrecord does not have full
+supported by \verb_whatrecord_ with some caveats.  \verb_whatrecord_ does not have full
 support for a C preprocessor, which the sequencer relies on.  This means
-that for simple files (and those that only use simple C \verb_define_s), whatrecord
+that for simple files (and those that only use simple C \verb_define_s), \verb_whatrecord_
 successfully parses the files, whereas complicated \verb_define_s could fail
 to parse with the included grammar.
 
@@ -455,30 +457,30 @@ to parse with the included grammar.
 
 At the LCLS, there are additional file formats that are in common use.
 The \verb_epicsArch_ format enumerates process variables that are to be
-included for recording in its data acquisition system.  whatrecord provides
+included for recording in its data acquisition system.  \verb_whatrecord_ provides
 support for this format and allows for linting and display through the
 frontend.
 
 The LCLS photon controls team uses the Python suite Bluesky\cite{bluesky} for
 slow-speed data acquisition, with approximately 1,000 Ophyd devices indexed in
-a happi\cite{happi} database.  whatrecord provides happi integration, mapping
+a happi\cite{happi} database.  \verb_whatrecord_ provides happi integration, mapping
 process variables used in Ophyd devices back to their IOCs.
 
 \subsubsection{Startup scripts}
 
 Startup scripts do not have a corresponding grammar. In the EPICS
 implementation, the IOC shell parses commands character-by-character with a
-custom routine.  whatrecord has a ported version of this parsing function
+custom routine.  \verb_whatrecord_ has a ported version of this parsing function
 for maximum compatibility, supporting redirection and everything else from the
 original.
 
 \subsubsection{Macro handling}
 
-Files supported by whatrecord often use the EPICS macro library (macLib)
+Files supported by \verb_whatrecord_ often use the EPICS macro library (macLib)
 in order to interpolate variables (environment variables or otherwise) to their
 corresponding values.
 
-whatrecord uses epicsmacrolib\cite{epicsmacrolib}, which is a Cython-wrapped
+\verb_whatrecord_ uses epicsmacrolib\cite{epicsmacrolib}, which is a Cython-wrapped
 version of EPICS macLib, under the hood to dutifully reproduce standard EPICS
 macro expansion and state tracking.
 
@@ -494,7 +496,7 @@ of how sumo scans source code is replicated. The library executes \verb_make_
 with a custom target, enabling the direct handling of any and all
 \verb_Makefile_ syntax that the host supports.
 
-whatrecord is able to extract a variety of information from a \verb_Makefile_
+\verb_whatrecord_ is able to extract a variety of information from a \verb_Makefile_
 in this manner, exporting information such as the EPICS build architectures,
 cross-compiler host architectures, target architectures, the EPICS base
 version, configuration paths, release top variables, environment variable
@@ -502,7 +504,7 @@ settings, and so on.
 
 \subsection{Backend server}
 
-Building on top of the parsing tools, whatrecord provides an
+Building on top of the parsing tools, \verb_whatrecord_ provides an
 aiohttp\cite{aiohttp}-based "backend" server daemon that enables users to query
 IOC-related information over a RESTful (REpresentational State Transfer) JSON
 interface.
@@ -516,7 +518,7 @@ A summary as to how the backend server operates is as follows:
     databases and supported files.
   \item Periodically check previously-loaded files for changes, and re-load
     IOCs.
-  \item Listen for clients (or the whatrecord frontend) querying for IOC
+  \item Listen for clients (or the \verb_whatrecord_ frontend) querying for IOC
     information by way of aiohttp.
 \end{enumerate}
 
@@ -564,8 +566,8 @@ and avoid common pitfalls by detecting issues prior to the IOC boot process.
 \section{WEB FRONTEND}
 
 A Vue.js\cite{vuejs} web-based frontend application is packaged separately in
-the whatrecord repository.  It provides a user-friendly view of the information
-that whatrecord can parse and aggregate.
+the \verb_whatrecord_ repository.  It provides a user-friendly view of the information
+that \verb_whatrecord_ can parse and aggregate.
 
 A searchable index of records is the primary view.  Record information can be
 used to correlate back to other tools and views. For example, when an autosave
@@ -607,9 +609,9 @@ viewer, and epicsArch PV listings.
 \subsection{GitHub Actions and "offline" mode}
 
 A sample repository\cite{gha-sample} is provided to exhibit the "offline" mode
-supported by whatrecord.
+supported by \verb_whatrecord_.
 
-The offline mode utilizes the whatrecord server in continuous integration to
+The offline mode utilizes the \verb_whatrecord_ server in continuous integration to
 generate a snapshot of the server information. This information then takes
 the place of a backend server, requiring only a tarball of JSON in order to
 populate the data.
@@ -634,7 +636,7 @@ The parsing tools can be used directly with a working Python 3.9+ environment:
 	$ whatrecord --help
 \end{lstlisting}
 
-The whatrecord source code is available on GitHub\cite{whatrecord-github}
+The \verb_whatrecord_ source code is available on GitHub\cite{whatrecord-github}
 and documentation is available on GitHub Pages\cite{whatrecord-docs}.
 
 \ifboolexpr{bool{jacowbiblatex}}%
