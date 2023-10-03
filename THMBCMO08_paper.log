@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  2 OCT 2023 17:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  2 OCT 2023 18:28
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -944,61 +944,90 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 
 
 ] [2]
-Underfull \hbox (badness 3281) in paragraph at lines 418--421
+Underfull \hbox (badness 3281) in paragraph at lines 415--418
  \T1/qtm/b/n/10 Ac-cess Se-cu-rity Con-fig-u-ra-tion Files (ACF)[] \T1/qtm/m/n/
 10 (+20) wha-
  []
 
 [3]
 
-LaTeX Warning: Citation `happi' on page 4 undefined on input line 465.
+LaTeX Warning: Citation `happi' on page 4 undefined on input line 462.
 
-[4]
+<st-simple.pdf, id=19, 464.73625pt x 439.6425pt>
+File: st-simple.pdf Graphic file (type pdf)
+<use st-simple.pdf>
+Package pdftex.def Info: st-simple.pdf  used on input line 533.
+(pdftex.def)             Requested size: 164.31393pt x 155.44023pt.
+<calc-records.pdf, id=21, 824.07875pt x 366.36874pt>
+File: calc-records.pdf Graphic file (type pdf)
+<use calc-records.pdf>
+Package pdftex.def Info: calc-records.pdf  used on input line 540.
+(pdftex.def)             Requested size: 211.26027pt x 93.92313pt.
+
+Underfull \hbox (badness 3068) in paragraph at lines 552--556
+ \T1/qtm/b/n/10 wha-trecord lint[] \T1/qtm/m/n/10 (+20) This com-mand of-fers a
+ work-in-
+ []
+
+[4 <./st-simple.pdf>]
+<whatrecord-asg.pdf, id=50, 1328.965pt x 1046.91125pt>
+File: whatrecord-asg.pdf Graphic file (type pdf)
+<use whatrecord-asg.pdf>
+Package pdftex.def Info: whatrecord-asg.pdf  used on input line 583.
+(pdftex.def)             Requested size: 211.26027pt x 166.42294pt.
+<whatrecord-ioc-stream-log0.pdf, id=52, 1328.965pt x 1046.91125pt>
+File: whatrecord-ioc-stream-log0.pdf Graphic file (type pdf)
+<use whatrecord-ioc-stream-log0.pdf>
+Package pdftex.def Info: whatrecord-ioc-stream-log0.pdf  used on input line 590
+.
+(pdftex.def)             Requested size: 211.26027pt x 166.42294pt.
 LaTeX Font Info:    Trying to load font information for T1+newtxtt on input lin
-e 657.
- (/usr/local/texlive/2020/texmf-dist/tex/latex/newtxtt/t1newtxtt.fd
+e 694.
+
+(/usr/local/texlive/2020/texmf-dist/tex/latex/newtxtt/t1newtxtt.fd
 File: t1newtxtt.fd 2020/02/15 Font definitions for T1/newtxtt.
 )
 LaTeX Font Info:    Font shape `T1/newtxtt/m/n' will be
-(Font)              scaled to size 9.0pt on input line 657.
+(Font)              scaled to size 9.0pt on input line 694.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `newtxtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 10000) in paragraph at lines 657--657
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
 []\T1/qtm/m/n/9 (+20) StreamDevice sup-port, $\T1/newtxtt/m/n/9 https : / /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 657--657
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
 \T1/newtxtt/m/n/9 paulscherrerinstitute . github . io / StreamDevice /
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 657--657
+[5 <./calc-records.pdf> <./whatrecord-asg.pdf> <./whatrecord-ioc-stream-log0.pd
+f>]
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
 []\T1/qtm/m/n/9 (+20) sumo: EPICS sup-port mod-ule man-ager, $\T1/newtxtt/m/n/9
  https :
  []
 
 
-Underfull \hbox (badness 1314) in paragraph at lines 657--657
+Underfull \hbox (badness 1314) in paragraph at lines 694--694
 []\T1/qtm/m/n/9 (+20) jq: JSON fil-ter command-line tool, $\T1/newtxtt/m/n/9 ht
 tps : / / jqlang .
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 657--657
+Underfull \hbox (badness 10000) in paragraph at lines 694--694
 []\T1/qtm/m/n/9 (+20) d3-graphviz, $\T1/newtxtt/m/n/9 https : / / github . com 
 / magjac /
  []
 
 - LAST -
-Extra skip:5.21054pt
-Left:393.30722pt/3.30003pt
-Right:389.80373pt/1.59299pt
-Output:393.05547pt
-[5] (./THMBCMO08_paper.aux)
+Extra skip:33.0pt
+Left:136.0pt/1.59299pt
+Right:103.0pt/1.59299pt
+Output:128.0pt
+[6] (./THMBCMO08_paper.aux)
 
  *File List*
    jacow.cls    2022/08/09 v2.15
@@ -1105,6 +1134,10 @@ ot1ntxtlf.fd    2015/01/17 v1.0 font definition file for OT1/ntx/tlf
   ts1qtm.fd    2009/09/25 v1.2 font definition file for TS1/qtm
 lstlang1.sty    2020/03/24 1.8d listings language file
 lstlang1.sty    2020/03/24 1.8d listings language file
+st-simple.pdf    Graphic file (type pdf)
+calc-records.pdf    Graphic file (type pdf)
+whatrecord-asg.pdf    Graphic file (type pdf)
+whatrecord-ioc-stream-log0.pdf    Graphic file (type pdf)
 t1newtxtt.fd    2020/02/15 Font definitions for T1/newtxtt.
  ***********
 
@@ -1113,13 +1146,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 16891 strings out of 480608
- 289537 string characters out of 5903631
- 772383 words of memory out of 5000000
- 32351 multiletter control sequences out of 15000+600000
- 648947 words of font info for 215 fonts, out of 8000000 for 9000
+ 16927 strings out of 480608
+ 290366 string characters out of 5903631
+ 772419 words of memory out of 5000000
+ 32385 multiletter control sequences out of 15000+600000
+ 649053 words of font info for 216 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 51i,11n,93p,878b,1621s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 49i,11n,93p,878b,1621s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/newtxtt/txttDec.enc}{/usr
 /local/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/texlive
 /2020/texmf-dist/fonts/enc/dvips/tex-gyre/q-ts1.enc}{/usr/local/texlive/2020/te
@@ -1130,10 +1163,10 @@ wtxtt/newtxtt.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/tex-gy
 re/qtmb.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/tex-gyre/qtm
 r.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb
 ></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on THMBCMO08_paper.pdf (5 pages, 186808 bytes).
+Output written on THMBCMO08_paper.pdf (6 pages, 346758 bytes).
 PDF statistics:
- 62 PDF objects out of 1000 (max. 8388607)
- 39 compressed objects within 1 object stream
+ 224 PDF objects out of 1000 (max. 8388607)
+ 132 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
- 37889 words of extra memory for PDF output out of 42996 (max. 10000000)
+ 37933 words of extra memory for PDF output out of 42996 (max. 10000000)
 

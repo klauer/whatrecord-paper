@@ -246,9 +246,9 @@ otherwise).
 
 The previous section's problem led the author over the years to desire a tool
 that could somehow unify these file formats and provide the ability to inspect
-the implicit links.
+the links.
 
-The overall goals of the project could be summarized as:
+The overall goals of the project are, in summary:
 \begin{itemize}
   \item Allow for easy parsing of all the special formats outside, and
     represent them in a widely-used interchange format like JSON.
@@ -279,14 +279,11 @@ whatrecord will parse any of the following into intuitive Python dataclasses usi
 \end{itemize}
 
 whatrecord can also interpret IOC shell scripts (i.e., \verb_st.cmd_) and track
-contextual information during the loading process:
-\begin{itemize}
-  \item What files were loaded during startup?
-  \item What records are available?
-  \item What errors were found?
-  \item What file and line did record X get loaded?
-  \item Inter- or intra-IOC record relationships
-\end{itemize}
+contextual information during the loading process.  It aims to determine the
+following: what files were loaded during startup, what records will
+be available in the IOC, what errors were found when loading, what file and
+line did each record get loaded, and what are the inter- or intra-IOC record
+relationships.
 
 Additionally, whatrecord offers tools for:
 \begin{itemize}
@@ -528,9 +525,34 @@ This graphing tool allows for graphing of records or state notation language
 transition diagrams. Inter-IOC record links may be graphed if multiple
 database files or startup scripts are specified.
 
+A sample state notation language graph is shown in Figure \ref{fig:simple.st},
+and a sample record relationship graph is shown in Figure \ref{fig:records}.
+
+\begin{figure}
+   \centering
+   \includegraphics*[width=.7\columnwidth]{st-simple}
+   \caption{Simple state notation language program}
+   \label{fig:simple.st}
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics*[width=.9\columnwidth]{calc-records}
+   \caption{Record relationship graph}
+   \label{fig:records}
+\end{figure}
+
 \subsubsection{whatrecord server}
 
-This command spawns the backend server.
+This command spawns the backend server.  It may also be used to export a cached
+state for offline usage by the frontend.
+
+\subsubsection{whatrecord lint}
+
+This command offers a work-in-progress set of linting tools, most of which
+has not yet been well-defined.  The goal for these tools will be to
+allow a facility to enforce certain standards for their IOC files
+and avoid common pitfalls by detecting issues prior to the IOC boot process.
 
 \section{WEB FRONTEND}
 
@@ -550,12 +572,27 @@ alongside the record information.  Source code files may be viewed by
 clicking on any context link.
 
 Record links, when detected, are displayed as an interactive graph (by way of
-\verb_d3-graphviz_\cite{d3graphviz}).
+\verb_d3-graphviz_\cite{d3graphviz}).  Inter-IOC links can be interactively
+investigated in the "PV Map" section.
 
-\subsection{Record searching}
-\subsection{IOC listing}
-\subsection{Inter-IOC PV Map}
-\subsection{Gateway}
+Sample screenshots of the frontend are shown in Figures
+\ref{fig:whatrecord-asg} and \ref{fig:whatrecord-links}.
+
+\begin{figure}
+   \centering
+   \includegraphics*[width=.9\columnwidth]{whatrecord-asg}
+   \caption{whatrecord frontend: record with access security group settings}
+   \label{fig:whatrecord-asg}
+\end{figure}
+
+\begin{figure}
+   \centering
+   \includegraphics*[width=.9\columnwidth]{whatrecord-ioc-stream-log0}
+   \caption{whatrecord frontend: record with links}
+   \label{fig:whatrecord-links}
+\end{figure}
+
+\subsection{LCLS}
 Views for LCLS-Specific tools can be enabled with an environment variable
 setting, including a view of happi devices, an LDAP / netconfig settings
 viewer, and epicsArch PV listings.
@@ -572,7 +609,8 @@ populate the data.
 
 \subsection{Trying whatrecord}
 
-The easiest method to try the frontend alongside the backend is with Docker.
+The easiest method to try the frontend alongside the backend is with Docker
+Compose.
 
 \begin{lstlisting}[language=bash]
 $ git clone https://github.com/pcdshub/whatrecord
@@ -589,14 +627,9 @@ The parsing tools can be used directly with a working Python 3.9+ environment:
 	$ whatrecord --help
 \end{lstlisting}
 
-\subsection{References}
-
 The whatrecord source code is available on GitHub\cite{whatrecord-github}
 and documentation is available on GitHub Pages\cite{whatrecord-docs}.
 
-%
-% only for "biblatex"
-%
 \ifboolexpr{bool{jacowbiblatex}}%
 	{\printbibliography}%
 	{%
