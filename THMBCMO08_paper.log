@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  3 OCT 2023 10:29
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  3 OCT 2023 10:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -944,32 +944,32 @@ File: lstlang1.sty 2020/03/24 1.8d listings language file
 
 
 ] [2]
-Underfull \hbox (badness 3281) in paragraph at lines 413--416
+Underfull \hbox (badness 3281) in paragraph at lines 417--420
  \T1/qtm/b/n/10 Ac-cess Se-cu-rity Con-fig-u-ra-tion Files (ACF)[] \T1/qtm/m/n/
 10 (+20) wha-
  []
 
 [3]
 
-LaTeX Warning: Citation `happi' on page 4 undefined on input line 460.
+LaTeX Warning: Citation `happi' on page 4 undefined on input line 464.
 
 
-Underfull \hbox (badness 1762) in paragraph at lines 483--487
+Underfull \hbox (badness 1762) in paragraph at lines 487--491
 \T1/qtm/m/n/10 (+20) module or per-IOC de-pen-den-cies and set-tings of the
  []
 
 <st-simple.pdf, id=19, 464.73625pt x 439.6425pt>
 File: st-simple.pdf Graphic file (type pdf)
 <use st-simple.pdf>
-Package pdftex.def Info: st-simple.pdf  used on input line 532.
+Package pdftex.def Info: st-simple.pdf  used on input line 540.
 (pdftex.def)             Requested size: 164.31393pt x 155.44023pt.
 <calc-records.pdf, id=21, 824.07875pt x 366.36874pt>
 File: calc-records.pdf Graphic file (type pdf)
 <use calc-records.pdf>
-Package pdftex.def Info: calc-records.pdf  used on input line 539.
+Package pdftex.def Info: calc-records.pdf  used on input line 547.
 (pdftex.def)             Requested size: 211.26027pt x 93.92313pt.
 
-Underfull \hbox (badness 3068) in paragraph at lines 551--555
+Underfull \hbox (badness 3068) in paragraph at lines 559--563
  \T1/qtm/b/n/10 wha-trecord lint[] \T1/qtm/m/n/10 (+20) This com-mand of-fers a
  work-in-
  []
@@ -978,51 +978,51 @@ Underfull \hbox (badness 3068) in paragraph at lines 551--555
 <whatrecord-asg.pdf, id=50, 1328.965pt x 1046.91125pt>
 File: whatrecord-asg.pdf Graphic file (type pdf)
 <use whatrecord-asg.pdf>
-Package pdftex.def Info: whatrecord-asg.pdf  used on input line 582.
+Package pdftex.def Info: whatrecord-asg.pdf  used on input line 590.
 (pdftex.def)             Requested size: 211.26027pt x 166.42294pt.
 <whatrecord-ioc-stream-log0.pdf, id=52, 1328.965pt x 1046.91125pt>
 File: whatrecord-ioc-stream-log0.pdf Graphic file (type pdf)
 <use whatrecord-ioc-stream-log0.pdf>
-Package pdftex.def Info: whatrecord-ioc-stream-log0.pdf  used on input line 589
+Package pdftex.def Info: whatrecord-ioc-stream-log0.pdf  used on input line 597
 .
 (pdftex.def)             Requested size: 211.26027pt x 166.42294pt.
 LaTeX Font Info:    Trying to load font information for T1+newtxtt on input lin
-e 697.
+e 705.
 
 (/usr/local/texlive/2020/texmf-dist/tex/latex/newtxtt/t1newtxtt.fd
 File: t1newtxtt.fd 2020/02/15 Font definitions for T1/newtxtt.
 )
 LaTeX Font Info:    Font shape `T1/newtxtt/m/n' will be
-(Font)              scaled to size 9.0pt on input line 697.
+(Font)              scaled to size 9.0pt on input line 705.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `newtxtt' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 10000) in paragraph at lines 697--697
+Underfull \hbox (badness 10000) in paragraph at lines 705--705
 []\T1/qtm/m/n/9 (+20) StreamDevice sup-port, $\T1/newtxtt/m/n/9 https : / /
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 697--697
+Underfull \hbox (badness 10000) in paragraph at lines 705--705
 \T1/newtxtt/m/n/9 paulscherrerinstitute . github . io / StreamDevice /
  []
 
 [5 <./calc-records.pdf> <./whatrecord-asg.pdf> <./whatrecord-ioc-stream-log0.pd
 f>]
-Underfull \hbox (badness 10000) in paragraph at lines 697--697
+Underfull \hbox (badness 10000) in paragraph at lines 705--705
 []\T1/qtm/m/n/9 (+20) sumo: EPICS sup-port mod-ule man-ager, $\T1/newtxtt/m/n/9
  https :
  []
 
 
-Underfull \hbox (badness 1314) in paragraph at lines 697--697
+Underfull \hbox (badness 1314) in paragraph at lines 705--705
 []\T1/qtm/m/n/9 (+20) jq: JSON fil-ter command-line tool, $\T1/newtxtt/m/n/9 ht
 tps : / / jqlang .
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 697--697
+Underfull \hbox (badness 10000) in paragraph at lines 705--705
 []\T1/qtm/m/n/9 (+20) d3-graphviz, $\T1/newtxtt/m/n/9 https : / / github . com 
 / magjac /
  []
@@ -1151,11 +1151,11 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 16932 strings out of 480608
- 290413 string characters out of 5903631
+ 16930 strings out of 480608
+ 290395 string characters out of 5903631
  772457 words of memory out of 5000000
  32386 multiletter control sequences out of 15000+600000
- 649265 words of font info for 218 fonts, out of 8000000 for 9000
+ 649159 words of font info for 217 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  49i,11n,93p,878b,1621s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/newtxtt/txttDec.enc}{/usr
@@ -1168,7 +1168,7 @@ wtxtt/newtxtt.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/tex-gy
 re/qtmb.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/tex-gyre/qtm
 r.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/tex-gyre/qtmri.pfb
 ></usr/local/texlive/2020/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on THMBCMO08_paper.pdf (6 pages, 346841 bytes).
+Output written on THMBCMO08_paper.pdf (6 pages, 346778 bytes).
 PDF statistics:
  224 PDF objects out of 1000 (max. 8388607)
  132 compressed objects within 2 object streams
