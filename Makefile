@@ -1,5 +1,5 @@
 all:
-	pdflatex THMBCMO08_paper.tex && \
-		pdflatex THMBCMO08_paper.tex && \
-			pdflatex THMBCMO08_paper.tex && \
-				open THMBCMO08_paper.pdf
+	pdflatex THMBCMO08.tex && \
+		pdflatex THMBCMO08.tex && \
+			pdflatex THMBCMO08.tex && \
+				open THMBCMO08.pdf
