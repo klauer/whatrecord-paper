@@ -1,4 +1,11 @@
+%
+%%%% !BIB TS-program = biber
+%%%% !BIB program = biber
+% !BIB TS-program = bibtex
+% !BIB program = bibtex
 % !TeX spellcheck = en_US
+% !TeX program = lualatex
+%
 %
 %
 % v 2.3  Feb 2019   Volker RW Schaa
@@ -119,7 +126,7 @@
 
 \section{BACKGROUND}
 
-\subsection{The problem - and the inspiration}
+\subsection{The Problem - and the Inspiration}
 
 At the LCLS (SLAC's Linac Coherent Light Source), the accelerator and photon
 side control systems include approximately 3000 IOC instances in total, with
@@ -214,6 +221,7 @@ streams for communication, for example:
     field(INP,  "@ProtocolFilename.proto getValue PS1")
   }
 \end{lstlisting}
+
 The device type here is set to \verb_"stream"_, a custom identifier that
 StreamDevice has hard-coded.  This instructs EPICS to use StreamDevice
 and interpret the \verb_INP_ field with it.  It us up to the IOC developer to
@@ -242,7 +250,7 @@ obvious and simple, it can be opaque at best to those unable to dedicate the
 time to reading through esoteric (and often outdated) manuals or source
 code.
 
-\subsection{Goals and the emergence of whatrecord}
+\subsection{Goals and the Emergence of whatrecord}
 
 The previous section's problem led the author over the years to desire a tool
 that could somehow unify these file formats and provide the ability to inspect
@@ -309,7 +317,7 @@ An intuitive Python API, user-facing command-line tools, a web-based
 API/backend server to monitor IOC scripts and serve IOC/record information, and
 a Vue.js-based frontend single-page application are also provided.
 
-\subsection{Parsing with lark}
+\subsection{Parsing with Lark}
 
 \verb_whatrecord_ utilizes the Lark\cite{lark} parser internally to parse most of its supported
 file formats.  Lark supports writing custom parsers with EBNF (extended
@@ -356,7 +364,7 @@ given database record instance:
  whatrecord/tests/iocs/ioc_a/ioc_a.db:1)
 \end{lstlisting}
 
-\subsection{Exporting/serializing to JSON}
+\subsection{Exporting/Serializing to JSON}
 
 With the \verb_whatrecord_ command-line entry point, you can parse supported formats
 and pipe their information to tools like \verb_jq_\cite{jq} to interact and run
@@ -406,7 +414,7 @@ $ whatrecord parse whatrecord/tests/iocs/db/pva/iq.db |
 
 \section{FORMATS AND IMPLEMENTATION NOTES}
 
-\subsubsection{Database files}
+\subsubsection{Database Files}
 
 \verb_whatrecord_ implements two grammars for EPICS process databases, as there are
 significant differences between the grammars used for EPICS V3 and V4+ IOCs.
@@ -414,95 +422,80 @@ significant differences between the grammars used for EPICS V3 and V4+ IOCs.
 A flag is available \verb_--v3_ for \verb_whatrecord parse_ to aid facilities
 that have not yet opted in to using V4+.
 
-\subsubsection{Access Security Configuration Files (ACF)}
+\subsubsection{Access Security Configuration Files (ACF)} whatrecord parses ACF
+files that target typical EPICS IOCs along with the EPICS gateway.  This
+information can be correlated to records in the frontend, covered in a later
+section.
 
-whatrecord parses ACF files that target typical EPICS IOCs along with
-the EPICS gateway.  This information can be correlated to records in the
-frontend, covered in a later section.
-
-\subsubsection{Substitution files}
-
-Substitutions files and those supported by \verb_dbLoadTemplate_ are
-readily supported by \verb_whatrecord_.  Contextual information as to which
-files are loaded in the process is reliably carried along.
+\subsubsection{Substitution Files} Substitutions files and those supported by
+\verb_dbLoadTemplate_ are readily supported by \verb_whatrecord_.  Contextual
+information as to which files are loaded in the process is reliably carried
+along.
 
 A separate grammar for the format used by the command-line tool \verb_MSI_ (the
-Macro Substitution and Include tool) is also provided due to their
-differing implementations.
+Macro Substitution and Include tool) is also provided due to their differing
+implementations.
 
-\subsubsection{Autosave save files}
+\subsubsection{Autosave Save Files} Autosave save files (\verb_.sav_), which
+track the state of a record such that it may be restored at the next boot of an
+IOC, are supported by \verb_whatrecord_. In the web frontend, these values will
+be displayed alongside those in the database file.
 
-Autosave save files (\verb_.sav_), which track the state of a record such that
-it may be restored at the next boot of an IOC, are supported by \verb_whatrecord_.
-In the web frontend, these values will be displayed alongside those in the
-database file.
+\subsubsection{Gateway PV Lists} Gateway \verb_.pvlist_ files are supported by
+\verb_whatrecord_.  In the frontend, this allows for the easy correlation of
+gateway rules to records that apply to it, and also in reverse, showing which
+gateway rules apply to the selected record.
 
-\subsubsection{Gateway PV lists}
+\subsubsection{Sequencer - State Notation Language} The EPICS sequencer's state
+notation language format \verb_.st_ files is supported by \verb_whatrecord_
+with some caveats. \verb_whatrecord_ does not have full support for a C
+preprocessor, which the sequencer relies on.  This means that for simple files
+(and those that only use simple C \verb_define_s), \verb_whatrecord_
+successfully parses the files, whereas complicated \verb_define_s could fail to
+parse with the included grammar.
 
-Gateway \verb_.pvlist_ files are supported by \verb_whatrecord_.  In the frontend,
-this allows for the easy correlation of gateway rules to records that
-apply to it, and also in reverse, showing which gateway rules apply to
-the selected record.
-
-\subsubsection{Sequencer - State Notation Language}
-
-The EPICS sequencer's state notation language format \verb_.st_ files is
-supported by \verb_whatrecord_ with some caveats.  \verb_whatrecord_ does not have full
-support for a C preprocessor, which the sequencer relies on.  This means
-that for simple files (and those that only use simple C \verb_define_s), \verb_whatrecord_
-successfully parses the files, whereas complicated \verb_define_s could fail
-to parse with the included grammar.
-
-\subsubsection{LCLS-specific formats}
-
-At the LCLS, there are additional file formats that are in common use.
-The \verb_epicsArch_ format enumerates process variables that are to be
-included for recording in its data acquisition system.  \verb_whatrecord_ provides
-support for this format and allows for linting and display through the
-frontend.
+\subsubsection{LCLS-Specific Formats} At the LCLS, there are additional file
+formats that are in common use. The \verb_epicsArch_ format enumerates process
+variables that are to be included for recording in its data acquisition system.
+\verb_whatrecord_ provides support for this format and allows for linting and
+display through the frontend.
 
 The LCLS photon controls team uses the Python suite Bluesky\cite{bluesky} for
 slow-speed data acquisition, with approximately 1,000 Ophyd devices indexed in
-a happi\cite{happi} database.  \verb_whatrecord_ provides happi integration, mapping
-process variables used in Ophyd devices back to their IOCs.
+a happi\cite{happi} database.  \verb_whatrecord_ provides happi integration,
+mapping process variables used in Ophyd devices back to their IOCs.
 
-\subsubsection{Startup scripts}
+\subsubsection{Startup Scripts} Startup scripts do not have a corresponding
+grammar. In the EPICS implementation, the IOC shell parses commands
+character-by-character with a custom routine.  \verb_whatrecord_ has a ported
+version of this parsing function for maximum compatibility, supporting
+redirection and everything else from the original.
 
-Startup scripts do not have a corresponding grammar. In the EPICS
-implementation, the IOC shell parses commands character-by-character with a
-custom routine.  \verb_whatrecord_ has a ported version of this parsing function
-for maximum compatibility, supporting redirection and everything else from the
-original.
+\subsubsection{Macro Handling} Files supported by \verb_whatrecord_ often use
+the EPICS macro library (macLib) in order to interpolate variables (environment
+variables or otherwise) to their corresponding values.
 
-\subsubsection{Macro handling}
+\verb_whatrecord_ uses epicsmacrolib\cite{epicsmacrolib}, which is a
+Cython-wrapped version of EPICS macLib, under the hood to dutifully reproduce
+standard EPICS macro expansion and state tracking.
 
-Files supported by \verb_whatrecord_ often use the EPICS macro library (macLib)
-in order to interpolate variables (environment variables or otherwise) to their
-corresponding values.
-
-\verb_whatrecord_ uses epicsmacrolib\cite{epicsmacrolib}, which is a Cython-wrapped
-version of EPICS macLib, under the hood to dutifully reproduce standard EPICS
-macro expansion and state tracking.
-
-\subsubsection{Makefiles}
-
-\verb_Makefile_s can be inspected to reveal per-module or per-IOC dependencies
-and settings of the EPICS build system. Unlike the other supported formats, 
-\verb_Makefile_s are not parsed but rather introspected by way of GNU
-\verb_make_, an optional external requirement.
+\subsubsection{Makefiles} \verb_Makefile_s can be inspected to reveal
+per-module or per-IOC dependencies and settings of the EPICS build system.
+Unlike the other supported formats, \verb_Makefile_s are not parsed but rather
+introspected by way of GNU \verb_make_, an optional external requirement.
 
 The implementation is noted as sumo\cite{sumo}-inspired, as an important part
 of how sumo scans source code is replicated. The library executes \verb_make_
 with a custom target, enabling the direct handling of any and all
 \verb_Makefile_ syntax that the host supports.
 
-\verb_whatrecord_ is able to extract a variety of information from a \verb_Makefile_
-in this manner, exporting information such as the EPICS build architectures,
-cross-compiler host architectures, target architectures, the EPICS base
-version, configuration paths, release top variables, environment variable
-settings, and so on.
+\verb_whatrecord_ is able to extract a variety of information from a
+\verb_Makefile_ in this manner, exporting information such as the EPICS build
+architectures, cross-compiler host architectures, target architectures, the
+EPICS base version, configuration paths, release top variables, environment
+variable settings, and so on.
 
-\subsection{Backend server}
+\subsection{Backend Server}
 
 Building on top of the parsing tools, \verb_whatrecord_ provides an
 aiohttp\cite{aiohttp}-based "backend" server daemon that enables users to query
@@ -522,20 +515,18 @@ A summary as to how the backend server operates is as follows:
     information by way of aiohttp.
 \end{enumerate}
 
-\subsection{Command-line tools}
-\subsubsection{whatrecord deps}
+\subsection{Command-Line Tools}
 
-This tool utilizes the \verb_Makefile_ parsing tools internally to recursively
-generate a dependency graph of supporting modules to a given IOC.
+\subsubsection{whatrecord Deps} This tool utilizes the \verb_Makefile_ parsing
+tools internally to recursively generate a dependency graph of supporting
+modules to a given IOC.
 
-\subsubsection{whatrecord graph}
+\subsubsection{whatrecord Graph} This graphing tool allows for graphing of
+records or state notation language transition diagrams. Inter-IOC record links
+may be graphed if multiple database files or startup scripts are specified.
 
-This graphing tool allows for graphing of records or state notation language
-transition diagrams. Inter-IOC record links may be graphed if multiple
-database files or startup scripts are specified.
-
-A sample state notation language graph is shown in Fig. \ref{fig:simple.st},
-and a sample record relationship graph is shown in Fig. \ref{fig:records}.
+A sample state notation language graph is shown in Fig.~\ref{fig:simple.st},
+and a sample record relationship graph is shown in Fig.~\ref{fig:records}.
 
 \begin{figure}
    \centering
@@ -551,17 +542,14 @@ and a sample record relationship graph is shown in Fig. \ref{fig:records}.
    \label{fig:records}
 \end{figure}
 
-\subsubsection{whatrecord server}
+\subsubsection{whatrecord Server} This command spawns the backend server.  It
+may also be used to export a cached state for offline usage by the frontend.
 
-This command spawns the backend server.  It may also be used to export a cached
-state for offline usage by the frontend.
-
-\subsubsection{whatrecord lint}
-
-This command offers a work-in-progress set of linting tools, most of which
-has not yet been well-defined.  The goal for these tools will be to
-allow a facility to enforce certain standards for their IOC files
-and avoid common pitfalls by detecting issues prior to the IOC boot process.
+\subsubsection{whatrecord Lint} This command offers a work-in-progress set of
+linting tools, most of which has not yet been well-defined.  The goal for these
+tools will be to allow a facility to enforce certain standards for their IOC
+files and avoid common pitfalls by detecting issues prior to the IOC boot
+process.
 
 \section{WEB FRONTEND}
 
@@ -606,20 +594,19 @@ Views for LCLS-Specific tools can be enabled with an environment variable
 setting, including a view of happi devices, an LDAP / netconfig settings
 viewer, and epicsArch PV listings.
 
-\subsection{GitHub Actions and "offline" mode}
+\subsection{GitHub Actions and "Offline" Mode}
 
 A sample repository\cite{gha-sample} is provided to exhibit the "offline" mode
 supported by \verb_whatrecord_.
 
-The offline mode utilizes the \verb_whatrecord_ server in continuous integration to
-generate a snapshot of the server information. This information then takes
-the place of a backend server, requiring only a tarball of JSON in order to
-populate the data.
+The offline mode utilizes the \verb_whatrecord_ server in continuous
+integration to generate a snapshot of the server information. This information
+then takes the place of a backend server, requiring only a tarball of JSON in
+order to populate the data.
 
 \subsection{Trying whatrecord}
 
-The easiest method to try the frontend alongside the backend is with Docker
-Compose.
+The easiest method to try the frontend alongside the backend is with Docker Compose.
 
 \begin{lstlisting}[language=bash]
 $ git clone https://github.com/pcdshub/whatrecord
@@ -636,8 +623,9 @@ The parsing tools can be used directly with a working Python 3.9+ environment:
 	$ whatrecord --help
 \end{lstlisting}
 
-The \verb_whatrecord_ source code is available on GitHub\cite{whatrecord-github}
-and documentation is available on GitHub Pages\cite{whatrecord-docs}.
+The \verb_whatrecord_ source code is available on
+GitHub\cite{whatrecord-github} and documentation is available on GitHub
+Pages\cite{whatrecord-docs}.
 
 \ifboolexpr{bool{jacowbiblatex}}%
 	{\printbibliography}%
@@ -645,14 +633,14 @@ and documentation is available on GitHub Pages\cite{whatrecord-docs}.
 	% "biblatex" is not used, go the "manual" way
 	
 	%\begin{thebibliography}{99}   % Use for  10-99  references
-	\begin{thebibliography}{9} % Use for 1-9 references
+	\begin{thebibliography}{99} % Use for 1-9 references
 	
 	\bibitem{whatrecord-github}
-    whatrecord: source code repository,
+    	whatrecord: source code repository,\\
 		\url{http://www.github.com/pcdshub/whatrecord}
 	
 	\bibitem{whatrecord-docs}
-    whatrecord: documentation,
+    	whatrecord: documentation,
 		\url{http://pcdshub.github.io/whatrecord}
 	
 	\bibitem{epics-base}
@@ -660,35 +648,39 @@ and documentation is available on GitHub Pages\cite{whatrecord-docs}.
 		\url{http://www.aps.anl.gov/epics/}
 	
 	\bibitem{streamdevice}
-		StreamDevice support,
+		StreamDevice support,\\
 		\url{https://paulscherrerinstitute.github.io/StreamDevice/index.html}
 	
 	\bibitem{lark}
-		Lark: a parsing toolkit for Python,
+		Lark: a parsing toolkit for Python,\\
 		\url{https://github.com/lark-parser/lark/}
 	
 	\bibitem{epicsmacrolib}
-    epicsmacrolib: EPICS-compliant macro handling,
+    	epicsmacrolib: EPICS-compliant macro handling,\\
 		\url{https://github.com/pcdshub/epicsmacrolib}
 	
 	\bibitem{sumo}
-		sumo: EPICS support module manager,
+		sumo: EPICS support module manager,\\
 		\url{https://epics-sumo.sourceforge.io/}
 	
 	\bibitem{aiohttp}
-		aiohttp: an asyncio HTTP client/server,
+		aiohttp: an asyncio HTTP client/server,\\
 		\url{https://docs.aiohttp.org/en/stable/}
 	
 	\bibitem{pytmc}
-    pytmc: TwinCAT PLC Code to EPICS Database Tool,
+   		pytmc: TwinCAT PLC Code to EPICS Database Tool,\\
 		\url{https://github.com/pcdshub/pytmc/}
-	
+
+  \bibitem{happi}
+    happi: the LCLS ophyd device database,\\
+    \url{https://github.com/pcdshub/happi/}
+
 	\bibitem{gha-sample}
 		GitHub Actions and whatrecord sample,
 		\url{https://github.com/pcdshub/ioc-whatrecord-example}
 	
 	\bibitem{jq}
-		jq: JSON filter command-line tool,
+		jq: JSON filter command-line tool,\\
 		\url{https://jqlang.github.io/jq/manual/}
 	
 	\bibitem{bluesky}
@@ -700,7 +692,7 @@ and documentation is available on GitHub Pages\cite{whatrecord-docs}.
 		\url{https://vuejs.org/}
 	
 	\bibitem{d3graphviz}
-    d3-graphviz,
+    d3-graphviz,\\
 		\url{https://github.com/magjac/d3-graphviz}
 	
 	\end{thebibliography}
