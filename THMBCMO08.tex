@@ -128,13 +128,17 @@
 
 \subsection{The Problem - and the Inspiration}
 
+Before digging into the details of the
+\verb_whatrecord_\cite{whatrecord-github}, toolsuite, let us first take a look
+at the problem and the inspiration behind its creation.
+
 At the LCLS (SLAC's Linac Coherent Light Source), the accelerator and photon
 side control systems include approximately 3000 IOC instances in total, with
 hundreds of modules and dozens of versions per module.
 
-In general, these EPICS IOCs, modules, and extensions are comprised of a
-conglomeration of unique file formats. Some common examples of such file
-formats include:
+In general, these EPICS\cite{epics-base} IOCs, modules, and extensions are
+comprised of a conglomeration of unique file formats. Some common examples of
+such file formats include:
 
 \begin{Itemize}
   \item Process database files (\verb_.db_)
@@ -257,7 +261,7 @@ that could somehow unify these file formats and provide the ability to inspect
 the links.
 
 These initial goals led to the creation of this new Python package,
-\verb_whatrecord_\cite{whatrecord-github}:
+\verb_whatrecord_:
 \begin{itemize}
   \item Allow for easy parsing of all the special formats outside, and
     represent them in a widely-used interchange format like JSON.
@@ -319,7 +323,7 @@ a Vue.js-based frontend single-page application are also provided.
 
 \subsection{Parsing with Lark}
 
-\verb_whatrecord_ utilizes the Lark\cite{lark} parser internally to parse most of its supported
+\verb_whatrecord_ utilizes the Lark parser internally to parse most of its supported
 file formats.  Lark supports writing custom parsers with EBNF (extended
 Backus–Naur form) metasyntax.  It is capable of parsing all context-free
 grammars with ambiguity resolution. 
@@ -475,16 +479,16 @@ redirection and everything else from the original.
 the EPICS macro library (macLib) in order to interpolate variables (environment
 variables or otherwise) to their corresponding values.
 
-\verb_whatrecord_ uses epicsmacrolib\cite{epicsmacrolib}, which is a
-Cython-wrapped version of EPICS macLib, under the hood to dutifully reproduce
-standard EPICS macro expansion and state tracking.
+\verb_whatrecord_ uses epicsmacrolib, which is a Cython-wrapped version of
+EPICS macLib, under the hood to dutifully reproduce standard EPICS macro
+expansion and state tracking.
 
 \subsubsection{Makefiles} \verb_Makefile_s can be inspected to reveal
 per-module or per-IOC dependencies and settings of the EPICS build system.
 Unlike the other supported formats, \verb_Makefile_s are not parsed but rather
 introspected by way of GNU \verb_make_, an optional external requirement.
 
-The implementation is noted as sumo\cite{sumo}-inspired, as an important part
+The implementation is noted as sumo-inspired, as an important part
 of how sumo scans source code is replicated. The library executes \verb_make_
 with a custom target, enabling the direct handling of any and all
 \verb_Makefile_ syntax that the host supports.
@@ -639,10 +643,6 @@ Pages\cite{whatrecord-docs}.
     	whatrecord: source code repository,\\
 		\url{http://www.github.com/pcdshub/whatrecord}
 	
-	\bibitem{whatrecord-docs}
-    	whatrecord: documentation,
-		\url{http://pcdshub.github.io/whatrecord}
-	
 	\bibitem{epics-base}
 		EPICS,
 		\url{http://www.aps.anl.gov/epics/}
@@ -655,30 +655,18 @@ Pages\cite{whatrecord-docs}.
 		Lark: a parsing toolkit for Python,\\
 		\url{https://github.com/lark-parser/lark/}
 	
-	\bibitem{epicsmacrolib}
-    	epicsmacrolib: EPICS-compliant macro handling,\\
-		\url{https://github.com/pcdshub/epicsmacrolib}
-	
 	\bibitem{sumo}
 		sumo: EPICS support module manager,\\
 		\url{https://epics-sumo.sourceforge.io/}
 	
-	\bibitem{aiohttp}
-		aiohttp: an asyncio HTTP client/server,\\
-		\url{https://docs.aiohttp.org/en/stable/}
+	\bibitem{epicsmacrolib}
+    	epicsmacrolib: EPICS-compliant macro handling,\\
+		\url{https://github.com/pcdshub/epicsmacrolib}
 	
 	\bibitem{pytmc}
    		pytmc: TwinCAT PLC Code to EPICS Database Tool,\\
 		\url{https://github.com/pcdshub/pytmc/}
 
-  \bibitem{happi}
-    happi: the LCLS ophyd device database,\\
-    \url{https://github.com/pcdshub/happi/}
-
-	\bibitem{gha-sample}
-		GitHub Actions and whatrecord sample,
-		\url{https://github.com/pcdshub/ioc-whatrecord-example}
-	
 	\bibitem{jq}
 		jq: JSON filter command-line tool,\\
 		\url{https://jqlang.github.io/jq/manual/}
@@ -687,6 +675,14 @@ Pages\cite{whatrecord-docs}.
     Bluesky,
 		\url{https://blueskyproject.io/}
 	
+  \bibitem{happi}
+    happi: the LCLS ophyd device database,\\
+    \url{https://github.com/pcdshub/happi/}
+
+	\bibitem{aiohttp}
+		aiohttp: an asyncio HTTP client/server,\\
+		\url{https://docs.aiohttp.org/en/stable/}
+	
 	\bibitem{vuejs}
     Vue.js,
 		\url{https://vuejs.org/}
@@ -694,6 +690,14 @@ Pages\cite{whatrecord-docs}.
 	\bibitem{d3graphviz}
     d3-graphviz,\\
 		\url{https://github.com/magjac/d3-graphviz}
+	
+	\bibitem{gha-sample}
+		GitHub Actions and whatrecord sample,
+		\url{https://github.com/pcdshub/ioc-whatrecord-example}
+	
+	\bibitem{whatrecord-docs}
+    	whatrecord: documentation,
+		\url{http://pcdshub.github.io/whatrecord}
 	
 	\end{thebibliography}
 } % end \ifboolexpr
